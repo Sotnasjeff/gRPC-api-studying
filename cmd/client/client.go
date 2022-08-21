@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("couldn't connect to gRPC Server: %v", err)
 	}
-
+	defer connection.Close()
 	client := pb.NewUserServiceClient(connection)
 
 	//AddUser(client)
