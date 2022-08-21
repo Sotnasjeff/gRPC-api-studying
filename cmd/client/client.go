@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
 
 	"github.com/Sotnasjeff/gRPC-api-studying/pb"
 
@@ -21,7 +22,8 @@ func main() {
 	client := pb.NewUserServiceClient(connection)
 
 	//AddUser(client)
-	AddUserVerbose(client)
+	//AddUserVerbose(client)
+	AddUsers(client)
 }
 
 func AddUser(client pb.UserServiceClient) {
@@ -61,4 +63,57 @@ func AddUserVerbose(client pb.UserServiceClient) {
 		}
 		fmt.Println("Status:", stream.Status, stream.GetUser())
 	}
+}
+
+func AddUsers(client pb.UserServiceClient) {
+	request := []*pb.User{
+		&pb.User{
+			Id:    "1",
+			Name:  "Jefferson",
+			Email: "jef@jef.com",
+		},
+		&pb.User{
+			Id:    "2",
+			Name:  "Andre",
+			Email: "and@and.com",
+		},
+		&pb.User{
+			Id:    "3",
+			Name:  "Adriana",
+			Email: "adri@adri.com",
+		},
+		&pb.User{
+			Id:    "4",
+			Name:  "Jackson",
+			Email: "jack@jack.com",
+		},
+		&pb.User{
+			Id:    "5",
+			Name:  "Jessica",
+			Email: "jess@jess.com",
+		},
+		&pb.User{
+			Id:    "6",
+			Name:  "Sabrina",
+			Email: "sab@sab.com",
+		},
+	}
+
+	stream, err := client.AddUsers(context.Background())
+	if err != nil {
+		log.Fatalf("Error creating request: %v", err)
+	}
+
+	for _, req := range request {
+		stream.Send(req)
+		time.Sleep(time.Second * 3)
+	}
+
+	responser, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("Error receiving response: %v", err)
+	}
+
+	fmt.Println(responser)
+
 }
