@@ -22,7 +22,7 @@ func NewUserService() *UserService {
 func (*UserService) AddUser(ctx context.Context, request *pb.User) (*pb.User, error) {
 
 	return &pb.User{
-		Id:    "2918928",
+		Id:    request.GetId(),
 		Name:  request.GetName(),
 		Email: request.GetEmail(),
 	}, nil
